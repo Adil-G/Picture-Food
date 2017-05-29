@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.0"
+    dexOptions {
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
+    }
+    defaultConfig {
+        applicationId "com.addyapps.picturefood"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        // Enabling multidex support.
+        multiDexEnabled true
+    }
+   // configurations { all*.exclude module: 'gson' }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+apply plugin: 'com.android.application'
+//apply plugin: "net.ltgt.apt"
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.google.apis:google-api-services-vision:v1-rev16-1.22.0'
+            compile('com.google.api-client:google-api-client-android:1.22.0') {
+                exclude module: 'httpclient'
+            }
+            compile('com.google.http-client:google-http-client-gson:1.20.0') {
+                exclude module: 'httpclient'
+            }
+    compile 'com.android.support:design:24.0.0'
+    compile(
+            "com.android.support:appcompat-v7:24.2.1",
+            "com.android.support:recyclerview-v7:24.2.1",
+            "com.android.support:design:24.2.1",
+
+            "com.clarifai.clarifai-api2:core:2.0.2",
+
+            // For logging our HTTP outbound + inbound data
+            "com.jakewharton.timber:timber:4.3.0",
+            "com.squareup.okhttp3:logging-interceptor:3.4.1",
+
+            // For runtime permissions on Marshmallow and above
+            "io.reactivex:rxjava:1.1.10",
+            "com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar",
+    )
+    compile('com.mikepenz:materialdrawer:5.6.0') { transitive = true }
+    //compile 'com.clarifai:clarifai-api-java:1.2.0'
+    // For getting views without clunky findViewById
+    compile 'com.jakewharton:butterknife:8.4.0'
+    //apt "com.jakewharton:butterknife-compiler:8.4.0"
+    //compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    //compile 'org.apache.httpcomponents:httpclient:4.5.3'
+    //compile 'org.apache.httpcomponents:httpcore:4.4.6'
+    // compile 'commons-logging:commons-logging:1.2'
+    compile 'com.squareup.okhttp3:okhttp:3.8.0'
+    compile 'org.jsoup:jsoup:1.10.2'
+   // compile 'io.selendroid:selendroid:0.17.0'
+    //   compile files('libs/selendroid-standalone-0.17.0-with-dependencies.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.google.apis:google-api-services-translate:v2-rev49-1.22.0'
+    compile 'com.google.http-client:google-http-client-gson:1.19.0'
+
+    //Dependencies for IMGUR API
+
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+}

@@ -608,16 +608,24 @@ public class RecipeAPI {
             p = Pattern.compile("\"pt\":\"(.*?)\"");
             m = p.matcher(jsonString);
             if(m.find()) {
-                try {
-                    curCaption = texts.get(i).text();
-                }catch (Exception indexOutOfBounds)
-                {
-                    indexOutOfBounds.printStackTrace();
-                    curCaption = m.group(1);
-                }
-                all.put(curCaption, curUrl);
-                // all.add(m.group(1));
+                curCaption= m.group(1);
             }
+            p = Pattern.compile("\"s\":\"(.*?)\"");
+            m = p.matcher(jsonString);
+            if(m.find()) {
+                curCaption+= m.group(1);
+            }
+                /*try {
+                curCaption = texts.get(i).text();
+            }catch (Exception indexOutOfBounds)
+            {
+                indexOutOfBounds.printStackTrace();
+                curCaption = m.group(1);
+            }
+            */
+            //curCaption = m.group(1);
+                all.put(curCaption, curUrl);
+
             i++;
         }
         if(all.size()<=3)
@@ -657,20 +665,27 @@ public class RecipeAPI {
                     //all.putAll(sendPost4_Part2(m.group(1)));
                 }
             }
-
             p = Pattern.compile("\"pt\":\"(.*?)\"");
             m = p.matcher(jsonString);
             if(m.find()) {
-                try {
-                    curCaption = texts.get(i).text();
-                }catch (Exception indexOutOfBounds)
-                {
-                    indexOutOfBounds.printStackTrace();
-                    curCaption = m.group(1);
-                }
-                all.put(curCaption, curUrl);
-               // all.add(m.group(1));
+                curCaption= m.group(1);
             }
+            p = Pattern.compile("\"s\":\"(.*?)\"");
+            m = p.matcher(jsonString);
+            if(m.find()) {
+                curCaption+= m.group(1);
+            }
+                /*try {
+                curCaption = texts.get(i).text();
+            }catch (Exception indexOutOfBounds)
+            {
+                indexOutOfBounds.printStackTrace();
+                curCaption = m.group(1);
+            }
+            */
+            //curCaption = m.group(1);
+            all.put(curCaption, curUrl);
+
             i++;
         }
         return all;
@@ -704,16 +719,24 @@ public class RecipeAPI {
             p = Pattern.compile("\"pt\":\"(.*?)\"");
             m = p.matcher(jsonString);
             if(m.find()) {
-                try {
+                curCaption= m.group(1);
+            }
+            p = Pattern.compile("\"s\":\"(.*?)\"");
+            m = p.matcher(jsonString);
+            if(m.find()) {
+                curCaption+= m.group(1);
+            }
+                /*try {
                 curCaption = texts.get(i).text();
             }catch (Exception indexOutOfBounds)
             {
                 indexOutOfBounds.printStackTrace();
                 curCaption = m.group(1);
             }
-                all.put(curCaption, curUrl);
-                // all.add(m.group(1));
-            }
+            */
+            //curCaption = m.group(1);
+            all.put(curCaption, curUrl);
+
             i++;
         }
         return all;

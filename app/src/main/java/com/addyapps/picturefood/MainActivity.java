@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int resIndex = 0; resIndex < listOfIdeas.size(); resIndex++) {
             String caption = listOfIdeas.get(resIndex);
-            ArrayList<String> labels = new RecipeAPI().filterTopics(caption);
+            //ArrayList<String> labels = new RecipeAPI().filterTopics(caption);
             dataModels.add(new DataModel("", caption, "in " + "" + " min.", "", foodElement.caption2Image.get(caption)));
 
         }

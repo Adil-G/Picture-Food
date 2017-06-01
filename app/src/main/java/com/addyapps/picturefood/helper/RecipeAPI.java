@@ -707,7 +707,8 @@ public String imageFromID(String id) throws Exception {
                 System.out.println(jsonString);
                 System.out.println("fj20: "+m.group(1));
                 try {
-                    ArrayList<String> cool = new ArrayList<>(Arrays.asList(coolStuff(m.group(1)).toString().split("//s")));
+
+                    /*ArrayList<String> cool = new ArrayList<>(Arrays.asList(coolStuff(m.group(1)).toString().split("//s")));
                     // List<String> colls =
                     ArrayList<String[]> s = chunks(cool, 300);
                     for (java.lang.Object[] c : s) {
@@ -720,6 +721,18 @@ public String imageFromID(String id) throws Exception {
                         ArrayList<String> fsdf = filterTopics(thisOne);
                         if(fsdf.size()<20)
                             curCaption += fsdf;
+                    }*/
+                    Pattern pattern;//= Pattern.compile("\"s\":\"(.*?)\"");
+                    Matcher matcher;
+                    pattern = Pattern.compile("\"pt\":\"(.*?)\"");
+                    matcher = pattern.matcher(jsonString);
+                    if(matcher.find()) {
+                        curCaption= matcher.group(1);
+                    }
+                    pattern = Pattern.compile("\"s\":\"(.*?)\"");
+                    matcher = pattern.matcher(jsonString);
+                    if(matcher.find()) {
+                        curCaption+= matcher.group(1);
                     }
                 }catch (Exception k){k.printStackTrace();}
 

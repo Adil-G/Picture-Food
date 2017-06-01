@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    GridView listView;
+    ListView listView;
     ImageView selectedImage;
     TextView resultTextView;
 
@@ -465,11 +465,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void giveRecipesInOrderChunk(String url,  File file) throws Exception {
+    private void giveRecipesInOrderChunkP2(String url,  File file) throws Exception {
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
-        String captionX = TestCSApi.getQueryFromImageURL(file);
-        dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
+
         FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
 
@@ -520,6 +519,77 @@ public class MainActivity extends AppCompatActivity {
                                 try{
 
                                     giveRecipes2(dataModel.getReadyIn());
+
+
+                                } catch(Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        };
+
+                        thread.start();
+                    }
+                });
+            }
+        });
+    }
+
+    private void giveRecipesInOrderChunk(String url,  File file) throws Exception {
+
+        final ArrayList<DataModel> dataModels= new ArrayList<>();
+        String captionX = TestCSApi.getQueryFromImageURL(file);
+        dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
+        FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
+        ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
+
+
+        for (int resIndex = 0; resIndex < listOfIdeas.size(); resIndex++) {
+            String caption = listOfIdeas.get(resIndex);
+            for(String cap : caption.replaceAll("\\[|\\]","").trim().split(",")) {
+                boolean isFood = false;
+                /*for(String c : cap.split("\\s+"))
+                {
+                    if(new RecipeAPI().recipeExists(c))
+                    {
+                        isFood = true;
+                        break;
+                    }
+                }*/
+                if(true||isFood)
+                    dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
+            }
+        }
+        final String finalRetThis = foodElement.description;
+        final String finalUrl = url;
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                resultTextView.setText(finalRetThis);
+                CustomAdapter adapter= new CustomAdapter(dataModels,getApplicationContext());
+
+                listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        final DataModel dataModel=  dataModels.get(position);
+
+                                    /*
+                                    String sdf = TranslateMe.getCaptionsInEnglish(
+                                            new ArrayList<String>(
+                                                    Arrays.asList(new String[]{}))).get(0);
+                                     */
+
+                        Snackbar.make(view, dataModel.getReadyIn()+"\n"+dataModel.getInXMins()+" API: "+dataModel.getDish(), Snackbar.LENGTH_LONG)
+                                .setAction("No action", null).show();
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try{
+
+                                    giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
 
 
                                 } catch(Exception e) {
@@ -761,7 +831,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        listView=(GridView)findViewById(R.id.list);
+        listView=(ListView)findViewById(R.id.list);
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
 

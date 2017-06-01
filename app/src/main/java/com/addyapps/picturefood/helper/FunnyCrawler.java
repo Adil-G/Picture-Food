@@ -50,10 +50,8 @@ public class FunnyCrawler {
         patternDomainName = Pattern.compile(DOMAIN_NAME_PATTERN);
     }
 
-    public static void main(String[] args) throws Exception {
-
-        /*System.out.println(FunnyCrawler.results(
-                new File("S:\\IMG_20170526_010021.jpg")));*/
+    public static void main(String[] args) throws Exception
+    {
         System.out.println(new RecipeAPI().filterTopics("Hi my name is adil"));
     }
     public static JSONArray results(File file) throws Exception {

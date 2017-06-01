@@ -18,13 +18,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addyapps.picturefood.akiniyalocts.imgurapiexample.UploadTest;
+import com.addyapps.picturefood.com.imgur.vendors.cloudsight_client.TestCSApi;
 import com.addyapps.picturefood.helper.FoodElement;
 import com.addyapps.picturefood.helper.FunnyCrawler;
+import com.addyapps.picturefood.helper.LoaderImageView;
 import com.addyapps.picturefood.helper.RecipeAPI;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    ListView listView;
+    GridView listView;
     ImageView selectedImage;
     TextView resultTextView;
 
@@ -327,6 +329,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }*/
+    private void giveRecipes2(String captionX) throws Exception {
+        System.out.println("3298j93fj: image click response");
+
+        final ArrayList<DataModel> dataModels= new ArrayList<>();
+        JSONArray entity_list = new FunnyCrawler().resultsJustRecepies(captionX);
+
+        for (int resIndex = 0; resIndex < entity_list.length(); resIndex++) {
+            try {
+                JSONObject resultInfo = entity_list.getJSONObject(resIndex);
+                String id = resultInfo.getString("id");
+                String title = resultInfo.getString("title");
+                String readyInMinutes = resultInfo.getString("readyInMinutes");
+                String image = resultInfo.getString("image");
+                System.out.println("09j398fj: "+title);
+
+
+                dataModels.add(new DataModel(id,title, "in " + readyInMinutes + " min.", "", image));
+            }catch (Exception nullpointer)
+            {
+                nullpointer.printStackTrace();
+            }
+        }
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                resultTextView.setText("");
+                CustomAdapter adapter= new CustomAdapter(dataModels,getApplicationContext());
+
+                listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
+                        final DataModel dataModel=  dataModels.get(position);
+
+                                    /*
+                                    String sdf = TranslateMe.getCaptionsInEnglish(
+                                            new ArrayList<String>(
+                                                    Arrays.asList(new String[]{}))).get(0);
+                                     */
+
+                        Snackbar.make(view, dataModel.getReadyIn()+"\n"+dataModel.getInXMins()+" API: "+dataModel.getDish(), Snackbar.LENGTH_LONG)
+                                .setAction("No action", null).show();
+                        /*final String[] url = {dataModel.getImageURL()};
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    url[0] = new RecipeAPI().imageFromID(dataModel.getId());
+                                    runOnUiThread(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            Picasso.with(getBaseContext())
+                                                    .load(url[0])
+                                                    .placeholder(R.drawable.ic_photo_library_black)
+                                                    .fit()
+                                                    .into(((LoaderImageView)view).getImageView());
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+
+                        thread.start();*/
+                    }
+                });
+            }
+        });
+    }
+
     private void giveRecipes(String url) throws Exception {
         System.out.println("3298j93fj: image click response");
         final ArrayList<DataModel> dataModels= new ArrayList<>();
@@ -392,14 +468,27 @@ public class MainActivity extends AppCompatActivity {
     private void giveRecipesInOrderChunk(String url,  File file) throws Exception {
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
+        String captionX = TestCSApi.getQueryFromImageURL(file);
+        dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
         FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
 
 
         for (int resIndex = 0; resIndex < listOfIdeas.size(); resIndex++) {
             String caption = listOfIdeas.get(resIndex);
-
-            dataModels.add(new DataModel("", caption, "in " + "" + " min.", "", foodElement.caption2Image.get(caption)));
+            for(String cap : caption.replaceAll("\\[|\\]","").trim().split(",")) {
+                boolean isFood = false;
+                for(String c : cap.split("\\s+"))
+                {
+                    if(new RecipeAPI().recipeExists(c))
+                    {
+                        isFood = true;
+                        break;
+                    }
+                }
+                if(isFood)
+                    dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
+            }
         }
         final String finalRetThis = foodElement.description;
         final String finalUrl = url;
@@ -430,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 try{
 
-                                    giveRecipesInOrder(dataModel.getImageURL());
+                                    giveRecipes2(dataModel.getReadyIn());
 
 
                                 } catch(Exception e) {
@@ -457,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
         for (int resIndex = 0; resIndex < listOfIdeas.size(); resIndex++) {
             String caption = listOfIdeas.get(resIndex);
             //ArrayList<String> labels = new RecipeAPI().filterTopics(caption);
-            dataModels.add(new DataModel("", caption, "in " + "" + " min.", "", foodElement.caption2Image.get(caption)));
+            dataModels.add(new DataModel("", caption, "", "", foodElement.caption2Image.get(caption)));
 
         }
         final String finalRetThis = foodElement.description;
@@ -672,7 +761,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        listView=(ListView)findViewById(R.id.list);
+        listView=(GridView)findViewById(R.id.list);
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
 

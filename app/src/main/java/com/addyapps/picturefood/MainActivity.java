@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
     private void giveRecipesInOrderChunk(String url,  File file) throws Exception {
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
-        String captionX = TestCSApi.getQueryFromImageURL(file);
+        final String captionX = TestCSApi.getQueryFromImageURL(file);
         dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
         FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }*/
-                if(true||isFood)
+                //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
                     dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
             }
         }
@@ -589,8 +589,10 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 try{
 
-                                    giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
-
+                                    //giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
+                                    String caption = dataModel.getReadyIn();
+                                    //if(!caption.toLowerCase().contains("food")&&!caption.toLowerCase().contains("cuisine"))
+                                        giveRecipes2(caption);
 
                                 } catch(Exception e) {
                                     e.printStackTrace();

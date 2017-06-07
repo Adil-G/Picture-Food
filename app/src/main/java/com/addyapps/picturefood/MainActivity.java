@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +27,7 @@ import com.addyapps.picturefood.akiniyalocts.imgurapiexample.UploadTest;
 import com.addyapps.picturefood.com.imgur.vendors.cloudsight_client.TestCSApi;
 import com.addyapps.picturefood.helper.FoodElement;
 import com.addyapps.picturefood.helper.FunnyCrawler;
+import com.addyapps.picturefood.helper.HPEHavenAPI;
 import com.addyapps.picturefood.helper.LoaderImageView;
 import com.addyapps.picturefood.helper.RecipeAPI;
 import com.squareup.picasso.Picasso;
@@ -37,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -536,6 +539,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void giveRecipesInOrderChunk(String url,  File file) throws Exception {
+        Resources res = getResources();
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
         final String captionX = TestCSApi.getQueryFromImageURL(file);
@@ -557,7 +561,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }*/
                 //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
-                    dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
+                String bestWord = "";
+                for(String subCaption :HPEHavenAPI.getListOfWords(cap,res))
+                {
+                    if(subCaption.split("\\s").length > bestWord.split("\\s").length)
+                    {
+                        bestWord = subCaption;
+                    }
+                }
+                    dataModels.add(new DataModel("", bestWord, "", "", foodElement.caption2Image.get(caption)));
             }
         }
         final String finalRetThis = foodElement.description;
@@ -591,6 +603,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     //giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
                                     String caption = dataModel.getReadyIn();
+
                                     //if(!caption.toLowerCase().contains("food")&&!caption.toLowerCase().contains("cuisine"))
                                         giveRecipes2(caption);
 

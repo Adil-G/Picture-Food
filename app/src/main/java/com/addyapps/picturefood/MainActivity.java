@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     ListView listView;
@@ -562,13 +563,27 @@ public class MainActivity extends AppCompatActivity {
                 }*/
                 //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
                 String bestWord = "";
-                for(String subCaption :HPEHavenAPI.getListOfWords(cap,res))
+                for(String subCaptionX :HPEHavenAPI.getListOfWords(cap,res))
                 {
-                    if(subCaption.split("\\s").length > bestWord.split("\\s").length)
+                    String subCaption = "";
+                    for(String sub : subCaptionX.split("\\s+"))
+                    {
+                        if(sub.length()>2)
+                            subCaption += sub + " ";
+                    }
+                    subCaption = subCaption.trim();
+                    System.out.println("k329gkw8: caption subCaptionX = "+subCaptionX);
+                    System.out.println("k329gkw8: caption RAW = "+subCaption);
+                    if(subCaption.split("\\s+").length < 2)
+                        continue;
+
+                    if(subCaption.split("\\s+").length > bestWord.split("\\s+").length)
                     {
                         bestWord = subCaption;
+                        System.out.println("k329gkw8: caption passed = "+subCaption);
                     }
                 }
+                if(!bestWord.isEmpty())
                     dataModels.add(new DataModel("", bestWord, "", "", foodElement.caption2Image.get(caption)));
             }
         }

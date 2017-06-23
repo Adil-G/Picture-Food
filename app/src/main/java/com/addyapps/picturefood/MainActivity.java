@@ -543,8 +543,8 @@ public class MainActivity extends AppCompatActivity {
         Resources res = getResources();
 
         final ArrayList<DataModel> dataModels= new ArrayList<>();
-        final String captionX = TestCSApi.getQueryFromImageURL(file);
-        dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
+        //final String captionX = TestCSApi.getQueryFromImageURL(file);
+        //dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
         FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
 
@@ -563,7 +563,8 @@ public class MainActivity extends AppCompatActivity {
                 }*/
                 //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
                 String bestWord = "";
-                for(String subCaptionX :HPEHavenAPI.getListOfWords(cap,res))
+                dataModels.add(new DataModel("", "TEST::>>"+cap, "", "", foodElement.caption2Image.get(caption)));
+                /*for(String subCaptionX :HPEHavenAPI.getListOfWords(cap,res))
                 {
                     String subCaption = "";
                     for(String sub : subCaptionX.split("\\s+"))
@@ -582,9 +583,9 @@ public class MainActivity extends AppCompatActivity {
                         bestWord = subCaption;
                         System.out.println("k329gkw8: caption passed = "+subCaption);
                     }
-                }
-                if(!bestWord.isEmpty())
-                    dataModels.add(new DataModel("", bestWord, "", "", foodElement.caption2Image.get(caption)));
+                }*/
+                //if(!bestWord.isEmpty())
+                //    dataModels.add(new DataModel("", bestWord, "", "", foodElement.caption2Image.get(caption)));
             }
         }
         final String finalRetThis = foodElement.description;

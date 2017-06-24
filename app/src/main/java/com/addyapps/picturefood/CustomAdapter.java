@@ -1,6 +1,8 @@
 package com.addyapps.picturefood;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.addyapps.picturefood.helper.LoaderImageView;
+import com.addyapps.picturefood.helper.RecipeAPI;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by corpi on 2017-05-18.
  */
-public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnClickListener{
+public class CustomAdapter extends ArrayAdapter<DataModel>{
 
     private ArrayList<DataModel> dataSet;
     Context mContext;
@@ -38,13 +41,69 @@ public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnCli
 
     }
 
-    @Override
+    /*@Override
     public void onClick(View v) {
 
         int position=(Integer) v.getTag();
         Object object= getItem(position);
-        DataModel dataModel=(DataModel)object;
+        final DataModel dataModel=(DataModel)object;
 
+
+        Snackbar.make(v, dataModel.getReadyIn()+"\n"+dataModel.getInXMins()+" API: "+dataModel.getDish(), Snackbar.LENGTH_LONG)
+                .setAction("No action", null).show();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try{
+
+                    //giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
+                    String caption = dataModel.getReadyIn();
+                    if(!caption.toLowerCase().contains("recipe"))
+                        caption += " recipes ";
+                    caption = caption.trim();
+
+                    //if(!caption.toLowerCase().contains("food")&&!caption.toLowerCase().contains("cuisine"))
+                    //giveRecipes2(caption);
+                    String[] caps =  caption.split("\\||-");
+                    boolean recipeFound = false;
+                    String url = null;
+                    for(int i=0;i<caps.length&&!recipeFound;i++) {
+                        String[] colonSides =  caps[i].split(":");
+                        String side = null;
+                        if(colonSides.length==1)
+                            side = colonSides[0];
+                        else if(colonSides.length>2)
+                            side = colonSides[1];
+                        else
+                            side = caption;
+
+                        if(!side.toLowerCase().contains("recipe"))
+                            side += " recipes ";
+                        side = side.trim();
+                        if(side.replace("recipes","").trim().split("\\s").length==1)
+                            continue;
+                        if (side.toLowerCase().contains("food"))
+                            continue;
+                        ArrayList<String> urls = new RecipeAPI().getGoogleResultsYummly(side);
+                        if (urls.size() == 0)
+                            continue;
+                        url = urls.get(0);
+                        recipeFound = true;
+
+                    }
+                    if(recipeFound) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        getContext().startActivity(browserIntent);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        thread.start();
+        /*
         switch (v.getId())
         {
             case R.id.item_info:
@@ -59,6 +118,7 @@ public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnCli
                 break;
         }
     }
+    */
 
     private int lastPosition = -1;
 
@@ -96,7 +156,7 @@ public class CustomAdapter extends ArrayAdapter<DataModel> implements View.OnCli
         viewHolder.txtName.setText(dataModel.getReadyIn());
         viewHolder.txtType.setText(dataModel.getInXMins());
         viewHolder.txtVersion.setText(dataModel.getDish());
-        viewHolder.info.setOnClickListener(this);
+        //viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
         //viewHolder.info.setImageDrawable(dataModel.getImageURL());
         Picasso.with(getContext())

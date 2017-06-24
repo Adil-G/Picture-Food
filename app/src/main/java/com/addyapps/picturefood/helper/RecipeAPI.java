@@ -542,7 +542,12 @@ public String imageFromID(String id) throws Exception {
            ArrayList<String> allLinks = new ArrayList<>();
            for (Element link : links) {
                String href = link.getElementsByTag("a").attr("href");
-               if(href.toLowerCase().contains("twitter")||href.toLowerCase().contains("pinterest")||href.toLowerCase().contains("pinit"))
+               if(!(
+                       doc.text().contains("minute")
+                       ||doc.text().contains("step")
+                               ||doc.text().contains("cup")
+                       )
+                       ||href.toLowerCase().contains("twitter")||href.toLowerCase().contains("pinterest")||href.toLowerCase().contains("pinit"))
                    continue;
                Elements titles = link.select("h3[class=r]");
                String title = titles.text();

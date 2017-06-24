@@ -610,6 +610,10 @@ public class MainActivity extends AppCompatActivity {
                                             side = colonSides[1];
                                         else
                                             side = caption;
+
+                                        if(!side.toLowerCase().contains("recipe"))
+                                            side += " recipes ";
+                                        side = side.trim();
                                         if(side.replace("recipes","").trim().split("\\s").length==1)
                                             continue;
                                         if (side.toLowerCase().contains("food"))

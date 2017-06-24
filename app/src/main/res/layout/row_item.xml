@@ -2,12 +2,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@color/md_black_1000">
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:text="Marshmallow"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -16,8 +17,8 @@
 
     <TextView
         android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@+id/name"
         android:layout_marginTop="5dp"
         android:text="Android 6.0"
@@ -25,8 +26,8 @@
 
     <com.addyapps.picturefood.helper.LoaderImageView
         android:id="@+id/item_info"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

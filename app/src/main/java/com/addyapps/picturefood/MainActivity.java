@@ -553,41 +553,13 @@ public class MainActivity extends AppCompatActivity {
             String caption = listOfIdeas.get(resIndex);
             String longestCaption = "";
             for(String cap : caption.replaceAll("\\[|\\]","").trim().split(",")) {
-                boolean isFood = false;
-                /*for(String c : cap.split("\\s+"))
-                {
-                    if(new RecipeAPI().recipeExists(c))
-                    {
-                        isFood = true;
-                        break;
-                    }
-                }*/
-                //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
-                
-                dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
-                /*for(String subCaptionX :HPEHavenAPI.getListOfWords(cap,res))
-                {
-                    String subCaption = "";
-                    for(String sub : subCaptionX.split("\\s+"))
-                    {
-                        if(sub.length()>2)
-                            subCaption += sub + " ";
-                    }
-                    subCaption = subCaption.trim();
-                    System.out.println("k329gkw8: caption subCaptionX = "+subCaptionX);
-                    System.out.println("k329gkw8: caption RAW = "+subCaption);
-                    if(subCaption.split("\\s+").length < 2)
-                        continue;
 
-                    if(subCaption.split("\\s+").length > bestWord.split("\\s+").length)
-                    {
-                        bestWord = subCaption;
-                        System.out.println("k329gkw8: caption passed = "+subCaption);
-                    }
-                }*/
-                //if(!bestWord.isEmpty())
-                //    dataModels.add(new DataModel("", bestWord, "", "", foodElement.caption2Image.get(caption)));
+                if(cap.length() > longestCaption.length())
+                    longestCaption = cap;
             }
+            longestCaption = longestCaption.replaceAll("pinterest|Pinterest|PINTEREST|pinterest","").trim();
+            dataModels.add(new DataModel("", longestCaption, "", "", foodElement.caption2Image.get(caption)));
+
         }
         final String finalRetThis = foodElement.description;
         final String finalUrl = url;

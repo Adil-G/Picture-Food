@@ -135,7 +135,7 @@ public class RecipeAPI {
     }
 
     public static void main(String[] args) throws Exception {
-
+        new RecipeAPI().getGoogleResultsYummly("cookie+recipes");
         /*
         String key="AIzaSyCpYRDkENrnDuKDecGz4nN20GajOcW1HPA";
         String qry="Android";
@@ -534,7 +534,34 @@ public String imageFromID(String id) throws Exception {
         }
         return dataModels;
     }
+    public ArrayList<String> getGoogleResultsYummly(String query)  {
+        System.out.println("adsfeawf "+query);
+       try {
+           Document doc = Jsoup.connect("http://www.google.com" + "/search?query=" +  query).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.76 Safari/537.36").get();
+           Elements links = doc.select("div[class=g]");
+           ArrayList<String> allLinks = new ArrayList<>();
+           for (Element link : links) {
+               String href = link.getElementsByTag("a").attr("href");
+               if(href.toLowerCase().contains("twitter")||href.toLowerCase().contains("pinterest")||href.toLowerCase().contains("pinit"))
+                   continue;
+               Elements titles = link.select("h3[class=r]");
+               String title = titles.text();
 
+               Elements bodies = link.select("span[class=st]");
+               String body = bodies.text();
+
+               System.out.println("Title: " + title);
+               System.out.println("Body: " + body + "\n");
+
+               System.out.println("HREF: " + href);
+               allLinks.add(href);
+           }
+           return allLinks;
+       }catch (Exception e){
+           e.printStackTrace();
+           return new ArrayList<>();
+       }
+    }
     public String sendPost3(String url) throws IOException, JSONException, URISyntaxException {
         String urlls = "https://yandex.com/images/search?url=" + url + "&rpt=imageview";
         String newUrl = "http://www.google.com/searchbyimage?hl=en&image_url=" + url;

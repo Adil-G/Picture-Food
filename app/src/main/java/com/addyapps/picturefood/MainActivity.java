@@ -551,6 +551,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int resIndex = 0; resIndex < listOfIdeas.size(); resIndex++) {
             String caption = listOfIdeas.get(resIndex);
+            String longestCaption = "";
             for(String cap : caption.replaceAll("\\[|\\]","").trim().split(",")) {
                 boolean isFood = false;
                 /*for(String c : cap.split("\\s+"))
@@ -562,8 +563,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }*/
                 //if(!cap.toLowerCase().contains("food")&&!cap.toLowerCase().contains("cuisine"))
-                String bestWord = "";
-                dataModels.add(new DataModel("", "TEST::>>"+cap, "", "", foodElement.caption2Image.get(caption)));
+                
+                dataModels.add(new DataModel("", cap, "", "", foodElement.caption2Image.get(caption)));
                 /*for(String subCaptionX :HPEHavenAPI.getListOfWords(cap,res))
                 {
                     String subCaption = "";
@@ -619,10 +620,39 @@ public class MainActivity extends AppCompatActivity {
 
                                     //giveRecipesInOrderChunkP2(dataModel.getImageURL(),null);
                                     String caption = dataModel.getReadyIn();
+                                    if(!caption.toLowerCase().contains("recipe"))
+                                        caption += " recipes ";
+                                    caption = caption.trim();
 
                                     //if(!caption.toLowerCase().contains("food")&&!caption.toLowerCase().contains("cuisine"))
-                                        giveRecipes2(caption);
+                                        //giveRecipes2(caption);
+                                    String[] caps =  caption.split("\\||-");
+                                    boolean recipeFound = false;
+                                    String url = null;
+                                    for(int i=0;i<caps.length&&!recipeFound;i++) {
+                                        String[] colonSides =  caps[i].split(":");
+                                        String side = null;
+                                        if(colonSides.length==1)
+                                            side = colonSides[0];
+                                        else if(colonSides.length>2)
+                                            side = colonSides[1];
+                                        else
+                                            side = caption;
+                                        if(side.replace("recipes","").trim().split("\\s").length==1)
+                                            continue;
+                                        if (side.toLowerCase().contains("food"))
+                                            continue;
+                                        ArrayList<String> urls = new RecipeAPI().getGoogleResultsYummly(side);
+                                        if (urls.size() == 0)
+                                            continue;
+                                        url = urls.get(0);
+                                        recipeFound = true;
 
+                                    }
+                                    if(recipeFound) {
+                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                        startActivity(browserIntent);
+                                    }
                                 } catch(Exception e) {
                                     e.printStackTrace();
                                 }

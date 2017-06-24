@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
         final ArrayList<DataModel> dataModels= new ArrayList<>();
         //final String captionX = TestCSApi.getQueryFromImageURL(file);
         //dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
-        final FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
+        FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
 
 
@@ -558,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
                     longestCaption = cap;
             }
             longestCaption = longestCaption.replaceAll("pinterest|Pinterest|PINTEREST|pinterest","").trim();
-            if(hasRecipe(longestCaption, foodElement.caption2Image.get(caption)))
+            if(hasRecipe(longestCaption))
                 dataModels.add(new DataModel("", longestCaption, "", "", foodElement.caption2Image.get(caption)));
 
         }
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity {
                                             continue;
                                         if (side.toLowerCase().contains("food"))
                                             continue;
-                                        ArrayList<String> urls = new RecipeAPI().sendPost5(dataModel.getImageURL(),side);
+                                        ArrayList<String> urls = new RecipeAPI().getGoogleResultsYummly(side);
                                         if (urls.size() == 0)
                                             continue;
                                         url = urls.get(0);
@@ -643,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-public static boolean hasRecipe(String caption,String imageURL)
+public static boolean hasRecipe(String caption)
 {
     try {
         Thread.sleep(2000);
@@ -670,11 +670,14 @@ public static boolean hasRecipe(String caption,String imageURL)
         if(!side.toLowerCase().contains("recipe"))
             side += " recipes ";
         side = side.trim();
+        if(side.isEmpty())
+            continue;
+        side = side.replaceAll("\\.{1,}","");
         if(side.replace("recipes","").trim().split("\\s").length==1)
             continue;
         if (side.toLowerCase().contains("food"))
             continue;
-        ArrayList<String> urls = new RecipeAPI().sendPost5(imageURL,side);
+        ArrayList<String> urls = new RecipeAPI().getGoogleResultsYummly(side);
         if (urls.size() == 0)
             continue;
         url = urls.get(0);
@@ -686,9 +689,6 @@ public static boolean hasRecipe(String caption,String imageURL)
     } catch (InterruptedException e) {
         e.printStackTrace();
         return false;
-    } catch (Exception e) {
-        e.printStackTrace();
-        return  false;
     }
 }
 

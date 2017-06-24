@@ -711,6 +711,50 @@ public String imageFromID(String id) throws Exception {
             }
         return all;
     }
+    public ArrayList<String> sendPost5(String url, String caption) throws Exception {
+
+
+        String up = "http://images.google.com/searchbyimage?image_url=" + url + "&safe=active"+"&query=" + caption;
+        Document doc = Jsoup.connect(up).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.76 Safari/537.36").get();
+        //System.out.println(doc.html());
+        Elements elements = doc.getElementsByClass("rg_meta");
+        //FoodElement all = new FoodElement();
+        //Elements texts = doc.getElementsByClass("st");
+        HashMap<String, String> all = new HashMap<>();
+        int i = 0;
+        ArrayList<String> urls = new ArrayList<>();
+        for (Element div : elements) {
+            String jsonString = div.text();
+            String curCaption = "";
+            Pattern p = Pattern.compile("\"ru\":\"(.*?)\"");
+            Matcher m = p.matcher(jsonString);
+            if (m.find()) {
+
+                System.out.println(jsonString);
+                System.out.println("fj20: "+m.group(1));
+                urls.add(m.group(1));
+            }
+
+            /*
+            p = Pattern.compile("\"s\":\"(.*?)\"");
+            m = p.matcher(jsonString);
+            if (m.find()) {
+                curCaption += m.group(1);
+            }*/
+                /*try {
+                curCaption = texts.get(i).text();
+            }catch (Exception indexOutOfBounds)
+            {
+                indexOutOfBounds.printStackTrace();
+                curCaption = m.group(1);
+            }
+            */
+            //curCaption = m.group(1);
+
+            i++;
+        }
+        return urls;
+    }
 
     public HashMap<String, String> sendPost5(String url, ArrayList<String> allTags, String caption, int level) throws Exception {
         caption = allTags.get(level);

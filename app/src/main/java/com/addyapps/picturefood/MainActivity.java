@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
         final ArrayList<DataModel> dataModels= new ArrayList<>();
         //final String captionX = TestCSApi.getQueryFromImageURL(file);
         //dataModels.add(new DataModel("",captionX , "in " + "" + " min.", "", url));
-        FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
+        final FoodElement foodElement = FunnyCrawler.resultsNoCaptionInOrder(url);
         ArrayList<String> listOfIdeas = new ArrayList<>(foodElement.caption2Image.keySet());
 
 
@@ -558,7 +558,8 @@ public class MainActivity extends AppCompatActivity {
                     longestCaption = cap;
             }
             longestCaption = longestCaption.replaceAll("pinterest|Pinterest|PINTEREST|pinterest","").trim();
-            dataModels.add(new DataModel("", longestCaption, "", "", foodElement.caption2Image.get(caption)));
+            if(hasRecipe(longestCaption, foodElement.caption2Image.get(caption)))
+                dataModels.add(new DataModel("", longestCaption, "", "", foodElement.caption2Image.get(caption)));
 
         }
         final String finalRetThis = foodElement.description;
@@ -618,7 +619,7 @@ public class MainActivity extends AppCompatActivity {
                                             continue;
                                         if (side.toLowerCase().contains("food"))
                                             continue;
-                                        ArrayList<String> urls = new RecipeAPI().getGoogleResultsYummly(side);
+                                        ArrayList<String> urls = new RecipeAPI().sendPost5(dataModel.getImageURL(),side);
                                         if (urls.size() == 0)
                                             continue;
                                         url = urls.get(0);
@@ -642,6 +643,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+public static boolean hasRecipe(String caption,String imageURL)
+{
+    try {
+        Thread.sleep(2000);
+
+    if(!caption.toLowerCase().contains("recipe"))
+        caption += " recipes ";
+    caption = caption.trim();
+
+    //if(!caption.toLowerCase().contains("food")&&!caption.toLowerCase().contains("cuisine"))
+    //giveRecipes2(caption);
+    String[] caps =  caption.split("\\||-");
+    boolean recipeFound = false;
+    String url = null;
+    for(int i=0;i<caps.length&&!recipeFound;i++) {
+        String[] colonSides =  caps[i].split(":");
+        String side = null;
+        if(colonSides.length==1)
+            side = colonSides[0];
+        else if(colonSides.length>2)
+            side = colonSides[1];
+        else
+            side = caption;
+
+        if(!side.toLowerCase().contains("recipe"))
+            side += " recipes ";
+        side = side.trim();
+        if(side.replace("recipes","").trim().split("\\s").length==1)
+            continue;
+        if (side.toLowerCase().contains("food"))
+            continue;
+        ArrayList<String> urls = new RecipeAPI().sendPost5(imageURL,side);
+        if (urls.size() == 0)
+            continue;
+        url = urls.get(0);
+        recipeFound = true;
+
+    }
+
+    return recipeFound;
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+        return false;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return  false;
+    }
+}
 
     private void giveRecipesInOrder(String url) throws Exception {
 
